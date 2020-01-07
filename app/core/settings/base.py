@@ -9,6 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0ju_gv40tg=b4--&2!%8sw+22ly_%b#t*$!$oyvvq9n$6n6j$z'
+IPSTACK_KEY = 'fb42c2ddb5bcab620377d9057a472c06'
 
 # Application definition
 
