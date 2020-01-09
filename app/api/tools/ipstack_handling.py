@@ -18,6 +18,9 @@ class IPStackHandler:
 
         data = geo_lookup.get_location(site_type[0])
 
+        if site_type[1] == 'url':
+            data['url'] = site_type[0]
+
         if not data['continent_name'] and not data['country_name'] and not data['region_name']:
             return HTTP_404_NOT_FOUND
         else:

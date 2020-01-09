@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from rest_framework import status
 
-from app.api.tools.ipstack_handling import IPStackHandler
+from ..tools.ipstack_handling import IPStackHandler
 
 
 class ExternalApiTest(TestCase):
