@@ -1,6 +1,7 @@
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -11,10 +12,13 @@ from .tools.ipstack_handling import IPStackHandler
 
 class LocationViewset(mixins.ListModelMixin,
                       mixins.CreateModelMixin,
+                      mixins.DestroyModelMixin,
                       viewsets.GenericViewSet):
 
     queryset = Location.objects.all()
     serializer_class = location_serializer.LocationSerializer
+    permission_classes = (IsAuthenticated, )
+    lookup_field = 'ip_with_bars'
 
     ipstack_handler = IPStackHandler()
 
@@ -25,7 +29,7 @@ class LocationViewset(mixins.ListModelMixin,
         location_data = self.ipstack_handler.get_location_data(site=site)
 
         if location_data == status.HTTP_404_NOT_FOUND:
-            return Response('Movie does not exists', status.HTTP_400_BAD_REQUEST)
+            return Response('IP does not exists', status.HTTP_400_BAD_REQUEST)
 
         if Location.objects.filter(ip=location_data['ip']).exists():
             return Response('IP already in db', status.HTTP_400_BAD_REQUEST)
@@ -36,9 +40,3 @@ class LocationViewset(mixins.ListModelMixin,
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @swagger_auto_schema(title='delete_ip', request_body=only_ip_serializer.OnlyIPSerializer)
-    @action(detail=False, methods=['DELETE'])
-    def delete_ip(self, request):
-        Location.objects.filter(site=request.data['site']).delete()
-        return Response(f"Record {request.data['site']} deleted")

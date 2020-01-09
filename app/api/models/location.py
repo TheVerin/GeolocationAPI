@@ -7,6 +7,7 @@ class Location(models.Model):
 
     url = models.CharField(max_length=100, blank=True, null=True)
     ip = models.CharField(max_length=100)
+    ip_with_bars = models.CharField(max_length=100, blank=True, null=True)
     type = models.CharField(max_length=100, blank=True, null=True)
     continent_code = models.CharField(max_length=100, blank=True, null=True)
     continent_name = models.CharField(max_length=100, blank=True, null=True)
@@ -16,9 +17,9 @@ class Location(models.Model):
     region_name = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     zip = models.CharField(max_length=100, blank=True, null=True)
-    latitude = models.DecimalField(max_digits=19, decimal_places=16)
-    longitude = models.DecimalField(max_digits=19, decimal_places=16)
-    location = JSONField()
+    latitude = models.DecimalField(max_digits=19, decimal_places=16, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=19, decimal_places=16, blank=True, null=True)
+    location = JSONField(blank=True, null=True)
 
     class Meta:
         app_label = 'api'
