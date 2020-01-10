@@ -1,6 +1,9 @@
 from rest_framework import mixins, viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -17,6 +20,7 @@ class LocationViewset(mixins.ListModelMixin,
     queryset = Location.objects.all()
     serializer_class = location_serializer.LocationSerializer
     permission_classes = (IsAuthenticated, )
+    authentication_classes = (SessionAuthentication, BaseAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip_with_bars'
     filter_backends = [filters.SearchFilter]
     search_fields = ['ip']

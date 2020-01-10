@@ -3,15 +3,13 @@ import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-config_variables = json.loads(open(os.path.join(BASE_DIR, '.config.json'), 'r').read())
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config_variables['SECRET_KEY']
-IPSTACK_KEY = config_variables['IPSTACK_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY', default='foo')
+IPSTACK_KEY = os.environ.get('IPSTACK_KEY', default='foo')
 
 # Application definition
 
@@ -49,6 +47,7 @@ REST_USE_JWT = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,10 +83,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': config_variables['DB_HOST'],
-        'NAME': config_variables['DB_NAME'],
-        'USER': config_variables['DB_USER'],
-        'PASSWORD': config_variables['DB_PASS']
+        'HOST': os.environ.get('DB_HOST'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS')
     }
 }
 
@@ -129,4 +128,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
