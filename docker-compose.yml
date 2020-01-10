@@ -6,14 +6,12 @@ services:
    build: .
    ports:
      - "8000:8000"
-   env_file:
-     - ./environment/api.env
    volumes:
      - ./app:/app
    command: >
      sh -c "python manage.py wait_for_db &&
             python manage.py migrate &&
-            python manage.py gunicorn core.wsgi:application --settings=core.settings.dev"
+            python manage.py runserver 0.0.0.0:8000 --settings=core.settings.dev"
    depends_on:
      - db
 
