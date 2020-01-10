@@ -47,7 +47,8 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
 
-    def test_create_valid_ipv4(self):
+    @patch('api.views.IPStackHandler')
+    def test_create_valid_ipv4(self, mock_ipstack_handler):
         payload = {
             'site': '2.2.2.2'
         }
@@ -61,7 +62,8 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(serializer.data['ip'], payload['site'])
         self.assertEqual(serializer.data['ip_with_bars'], '2_2_2_2')
 
-    def test_create_valid_ipv6(self):
+    @patch('api.views.IPStackHandler')
+    def test_create_valid_ipv6(self, mock_ipstack_handler):
         payload = {
             'site': '2606:4700:20::681a:654'
         }
@@ -75,7 +77,8 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(serializer.data['ip'], payload['site'])
         self.assertEqual(serializer.data['ip_with_bars'], '2606_4700_20__681a_654')
 
-    def test_create_ip_already_in_db(self):
+    @patch('api.views.IPStackHandler')
+    def test_create_ip_already_in_db(self, mock_ipstack_handler):
         payload = {
             'site': '1.1.1.1'
         }
@@ -83,7 +86,8 @@ class PrivateGeolocationkApiTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_no_ip(self):
+    @patch('api.views.IPStackHandler')
+    def test_create_no_ip(self, mock_ipstack_handler):
         payload = {
             'site': ''
         }
@@ -91,7 +95,8 @@ class PrivateGeolocationkApiTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_invalid_ip(self):
+    @patch('api.views.IPStackHandler')
+    def test_create_invalid_ip(self, mock_ipstack_handler):
         payload = {
             'site': '1234.2.3.4'
         }
