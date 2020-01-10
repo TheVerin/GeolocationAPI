@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -18,6 +18,8 @@ class LocationViewset(mixins.ListModelMixin,
     serializer_class = location_serializer.LocationSerializer
     permission_classes = (IsAuthenticated, )
     lookup_field = 'ip_with_bars'
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['ip']
 
     ipstack_handler = IPStackHandler()
 
