@@ -34,5 +34,3 @@ class IPStackHandler:
             return HTTP_404_NOT_FOUND
         else:
             return data
-
-

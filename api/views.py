@@ -1,7 +1,7 @@
 from rest_framework import mixins, viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+from rest_framework.authentication import SessionAuthentication
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
