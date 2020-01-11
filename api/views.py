@@ -5,11 +5,15 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+
 from drf_yasg.utils import swagger_auto_schema
 
-from .models.location import Location
-from .serializers import location_serializer, only_ip_serializer
-from .tools.ipstack_handling import IPStackHandler
+from api.models.location import Location
+from api.serializers import location_serializer, only_ip_serializer
+from api.tools.ipstack_handling import IPStackHandler
 
 
 class LocationViewset(mixins.ListModelMixin,
@@ -20,7 +24,7 @@ class LocationViewset(mixins.ListModelMixin,
     queryset = Location.objects.all()
     serializer_class = location_serializer.LocationSerializer
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (SessionAuthentication, BaseAuthentication, JSONWebTokenAuthentication)
+    authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip_with_bars'
     filter_backends = [filters.SearchFilter]
     search_fields = ['ip']
@@ -45,3 +49,8 @@ class LocationViewset(mixins.ListModelMixin,
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @method_decorator(cache_page(60 * 60))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

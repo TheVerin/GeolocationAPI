@@ -6,8 +6,8 @@ from django.test import TestCase
 
 from unittest.mock import patch
 
-from ..models.location import Location
-from ..serializers.location_serializer import LocationSerializer
+from api.models.location import Location
+from api.serializers.location_serializer import LocationSerializer
 
 
 LOCATION_URL = '/api/v1/location/'
@@ -20,7 +20,7 @@ class PublicGeolocationApiTest(TestCase):
 
     def test_login_required(self):
         response = self.client.get(LOCATION_URL)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class PrivateGeolocationkApiTest(TestCase):
