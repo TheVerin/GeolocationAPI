@@ -1,4 +1,4 @@
-from ..tools.payload_validation import PayloadValidator
+from api.tools.payload_validation import PayloadValidator
 
 from django.test import TestCase
 
