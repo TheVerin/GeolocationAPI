@@ -3,12 +3,9 @@ class PayloadValidator:
     @staticmethod
     def payload_validation(site):
         site = site.lower()
-        is_ip = len(site.split('.'))
-        if len(site) == 0:
-            return [site, 'null']
-        elif is_ip == 4 or len(site.split(':')) > 2:
+        if len(site.split('.')) == 4 or len(site.split(':')) > 2:
             return [site, 'ip']
-        elif site[0] == 'h':
+        elif site.startswith('http') or site.startswith('https'):
             return [site.split('//')[1], 'url']
         else:
             return [site, 'url']

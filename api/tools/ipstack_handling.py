@@ -2,8 +2,6 @@ from ipstack import GeoLookup
 
 from django.conf import settings
 
-from rest_framework.status import HTTP_404_NOT_FOUND
-
 from .payload_validation import PayloadValidator
 
 
@@ -13,8 +11,8 @@ class IPStackHandler:
         self.validator = PayloadValidator()
 
     def get_location_data(self, site):
-        if site == '':
-            return HTTP_404_NOT_FOUND
+        if not site:
+            return False
 
         site_type = self.validator.payload_validation(site)
         geo_lookup = GeoLookup(settings.IPSTACK_KEY)
@@ -27,10 +25,7 @@ class IPStackHandler:
         if site_type[1] == 'url':
             data['url'] = site_type[0]
 
-        if site_type[1] == 'null':
-            return HTTP_404_NOT_FOUND
-
         if not data['continent_name'] and not data['country_name'] and not data['region_name']:
-            return HTTP_404_NOT_FOUND
+            return False
         else:
             return data
