@@ -2,8 +2,6 @@ import json
 
 from django.test import TestCase
 
-from rest_framework import status
-
 from api.tools.ipstack_handling import IPStackHandler
 
 
@@ -20,11 +18,11 @@ class ExternalApiTest(TestCase):
 
     def test_get_invalid_ipv4_site(self):
         response_data = self.ip_handler.get_location_data('1111.1111.1111.1111')
-        self.assertEqual(response_data, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response_data, False)
 
     def test_get_invalid_url_site(self):
         response_data = self.ip_handler.get_location_data('ibetthereisnowebsitelikethis.com')
-        self.assertEqual(response_data, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response_data, False)
 
     def test_get_valid_ipv6_site(self):
         with open('api/tests/example_ipstack_response.json') as json_file:
@@ -34,4 +32,4 @@ class ExternalApiTest(TestCase):
 
     def test_get_invalid_ipv6_site(self):
         response_data = self.ip_handler.get_location_data('260asd6:470asd0:20asd::681asda:65sad4')
-        self.assertEqual(response_data, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response_data, False)

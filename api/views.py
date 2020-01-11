@@ -40,7 +40,7 @@ class LocationViewset(mixins.ListModelMixin,
 
         location_data = self.ipstack_handler.get_location_data(site=site)
 
-        if location_data == status.HTTP_404_NOT_FOUND:
+        if not location_data:
             return Response('IP does not exists', status.HTTP_400_BAD_REQUEST)
 
         if Location.objects.filter(ip=location_data['ip']).exists():
