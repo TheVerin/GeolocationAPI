@@ -5,6 +5,8 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
@@ -26,8 +28,9 @@ class LocationViewset(mixins.ListModelMixin,
     permission_classes = (IsAuthenticated, )
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip_with_bars'
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['ip']
+    filterset_fields = ('type', 'continent_name', 'country_name', 'region_name', 'city')
 
     ipstack_handler = IPStackHandler()
 
