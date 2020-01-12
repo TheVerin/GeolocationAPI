@@ -33,7 +33,7 @@ class LocationViewset(mixins.ListModelMixin,
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip_with_bars'
     filter_backends = (filters.SearchFilter, DjangoFilterBackend)
-    search_fields = ('ip',)
+    search_fields = ('ip', 'url')
     filterset_fields = ('type', 'continent_name', 'country_name', 'region_name', 'city')
 
     ipstack_handler = IPStackHandler()
