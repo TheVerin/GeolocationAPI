@@ -32,8 +32,8 @@ class LocationViewset(mixins.ListModelMixin,
     permission_classes = (IsAuthenticated, )
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip_with_bars'
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    search_fields = ['ip']
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend)
+    search_fields = ('ip',)
     filterset_fields = ('type', 'continent_name', 'country_name', 'region_name', 'city')
 
     ipstack_handler = IPStackHandler()
@@ -42,7 +42,10 @@ class LocationViewset(mixins.ListModelMixin,
     def create(self, request, *args, **kwargs):
         site = request.data['site']
 
-        location_data = self.ipstack_handler.get_location_data(site=site)
+        try:
+            location_data = self.ipstack_handler.get_location_data(site=site)
+        except Exception:
+            return Response('IPStack service not available!', status.HTTP_400_BAD_REQUEST)
 
         if not location_data:
             return Response('IP does not exists', status.HTTP_400_BAD_REQUEST)
