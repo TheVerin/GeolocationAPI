@@ -20,6 +20,9 @@ premium:
 test:
 	docker-compose exec web python manage.py test && flake8
 
+static:
+	docker-compose exec web python manage.py collectstatic --noinput
+
 stop:
 	docker-compose down -v
 
@@ -32,6 +35,6 @@ setup-dev: build-dev run-dev migrate premium
 run-tests-dev: setup-dev test stop
 
 
-setup-prod: build-prod run-prod migrate premium
+setup-prod: build-prod run-prod static migrate premium
 
 run-tests-prod: setup-prod test stop
