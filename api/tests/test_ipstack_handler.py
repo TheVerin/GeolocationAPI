@@ -10,6 +10,37 @@ class ExternalApiTest(TestCase):
     def setUp(self) -> None:
         self.ip_handler = IPStackHandler()
 
+    def test_ipv4_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('1.1.1.1'), ['1.1.1.1', 'ip'])
+
+    def test_ipv6_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('2606:4700:20::681a:754'),
+                         ['2606:4700:20::681a:754', 'ip'])
+
+    def test_www_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('www.sofomo.com'),
+                         ['www.sofomo.com', 'url'])
+
+    def test_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('sofomo.com'),
+                         ['sofomo.com', 'url'])
+
+    def test_https_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('https://sofomo.com'),
+                         ['sofomo.com', 'url'])
+
+    def test_https_www_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('https://www.sofomo.com'),
+                         ['www.sofomo.com', 'url'])
+
+    def test_http_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('http://sofomo.com'),
+                         ['sofomo.com', 'url'])
+
+    def test_http_www_url_site(self):
+        self.assertEqual(self.ip_handler._payload_validation('http://www.sofomo.com'),
+                         ['www.sofomo.com', 'url'])
+
     def test_get_valid_ipv4_site(self):
         with open('api/tests/example_ipstack_response.json') as json_file:
             example_data = json.loads(json_file.read())
