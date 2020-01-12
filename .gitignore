@@ -133,3 +133,6 @@ dmypy.json
 
 # Config files
 .config*
+
+# Secret message
+message.json

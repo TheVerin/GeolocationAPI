@@ -6,7 +6,10 @@ run:
 
 migrate:
 	docker-compose exec web python manage.py makemigrations
-	docker-compose exec web python manage.py migrate 
+	docker-compose exec web python manage.py migrate
+
+premium:
+	docker-compose exec web python manage.py create_premium_group
 
 test:
 	docker-compose exec web python manage.py test && flake8
@@ -17,6 +20,6 @@ stop:
 bash:
 	docker-compose exec web bash
 
-setup: build run migrate
+setup: build run migrate premium
 
-run-tests: build run migrate test stop
+run-tests: setup test stop

@@ -1,4 +1,7 @@
+import json
+
 from rest_framework import mixins, viewsets, status, filters
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
@@ -16,6 +19,7 @@ from drf_yasg.utils import swagger_auto_schema
 from api.models.location import Location
 from api.serializers import location_serializer, only_ip_serializer
 from api.tools.ipstack_handling import IPStackHandler
+from api.permissions.premium_user import PremiumUser
 
 
 class LocationViewset(mixins.ListModelMixin,
@@ -57,3 +61,18 @@ class LocationViewset(mixins.ListModelMixin,
     @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+
+class SecretMessage(APIView):
+    permission_classes = (IsAuthenticated, PremiumUser)
+    authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
+
+    @method_decorator(cache_page(60 * 60))
+    @method_decorator(vary_on_cookie)
+    def get(self, request):
+        try:
+            with open('api/message.json') as json_file:
+                data = json.loads(json_file.read())
+                return Response(data['message'])
+        except FileNotFoundError:
+            return Response('If you want to get secret message you need to look for it in api ;)')
