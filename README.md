@@ -71,3 +71,5 @@ for PROD:
 That's all :)
 
 I hope you enjoy the app ;)
+
+P.S Remember, its always better to join premium...
