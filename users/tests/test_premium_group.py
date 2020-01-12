@@ -4,11 +4,10 @@ from rest_framework.test import APIClient
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse
 
 
-JOIN_PREMIUM = reverse('join')
-LEAVE_PREMIUM = reverse('leave')
+JOIN_PREMIUM = '/users/join/'
+LEAVE_PREMIUM = '/users/leave/'
 
 
 class TestPremiumGroupPublic(TestCase):
