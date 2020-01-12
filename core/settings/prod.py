@@ -5,7 +5,7 @@ import django_heroku
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'tomaszbebenapp.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'tomaszbeben.herokuapp.com/']
 
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
