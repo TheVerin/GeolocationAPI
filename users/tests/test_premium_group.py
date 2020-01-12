@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 
-JOIN_PREMIUM = '/users/join/'
-LEAVE_PREMIUM = '/users/leave/'
+JOIN_PREMIUM = '/users/join-premium/'
+LEAVE_PREMIUM = '/users/leave-premium/'
 
 
 class TestPremiumGroupPublic(TestCase):
@@ -35,8 +35,10 @@ class TestPremiumGroupPrivate(TestCase):
     def test_join_and_leave_premium(self):
         response = self.client.get(JOIN_PREMIUM)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['response'], 'User successfully upgraded to Premium')
         self.assertTrue(self.user.groups.filter(name='Premium'))
 
         response = self.client.get(LEAVE_PREMIUM)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['response'], 'User successfully leave Premium')
         self.assertFalse(self.user.groups.filter(name='Premium'))

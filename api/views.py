@@ -1,4 +1,4 @@
-import json
+import os
 
 from rest_framework import mixins, viewsets, status, filters
 from rest_framework.views import APIView
@@ -45,13 +45,14 @@ class LocationViewset(mixins.ListModelMixin,
         try:
             location_data = self.ipstack_handler.get_location_data(site=site)
         except Exception:
-            return Response('IPStack service not available!', status.HTTP_400_BAD_REQUEST)
+            return Response({'response': 'IPStack service not available!'},
+                            status.HTTP_400_BAD_REQUEST)
 
         if not location_data:
-            return Response('IP does not exists', status.HTTP_400_BAD_REQUEST)
+            return Response({'response': 'Site does not exists'}, status.HTTP_400_BAD_REQUEST)
 
         if Location.objects.filter(ip=location_data['ip']).exists():
-            return Response('IP already in db', status.HTTP_400_BAD_REQUEST)
+            return Response({'response': 'IP already in db'}, status.HTTP_400_BAD_REQUEST)
 
         serializer = self.serializer_class(data=location_data)
 
@@ -74,9 +75,7 @@ class SecretMessage(APIView):
     @method_decorator(vary_on_cookie)
     def get(self, request):
         try:
-            with open('api/message.json') as json_file:
-                data = json.loads(json_file.read())
-                return Response(data['message'])
+            return Response({'response': os.environ.get('SECRET_MESSAGE')})
         except FileNotFoundError:
-            return Response('If you want to get secret message you need to look for it in web app '
-                            ';)')
+            return Response({'response': 'If you want to get secret message you need to look for it'
+                                         ' in web app ;)'})

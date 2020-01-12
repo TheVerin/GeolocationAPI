@@ -14,7 +14,7 @@ class JoinPremium(APIView):
     def get(request):
         premium_group = Group.objects.get(name='Premium')
         request.user.groups.add(premium_group)
-        return Response({'User successfully upgraded to Premium'})
+        return Response({'response': 'User successfully upgraded to Premium'})
 
 
 class LeavePremium(APIView):
@@ -25,4 +25,4 @@ class LeavePremium(APIView):
     def get(request):
         premium_group = Group.objects.get(name='Premium')
         request.user.groups.remove(premium_group)
-        return Response({'User successfully leave Premium'})
+        return Response({'response': 'User successfully leave Premium'})

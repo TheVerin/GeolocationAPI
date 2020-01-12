@@ -99,6 +99,7 @@ class PrivateGeolocationkApiTest(TestCase):
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['response'], 'IP already in db')
 
     @patch('api.views.IPStackHandler')
     def test_create_invalid_ipv4(self, mock_ipstack_handler):
@@ -108,6 +109,7 @@ class PrivateGeolocationkApiTest(TestCase):
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['response'], 'Site does not exists')
 
     @patch('api.views.IPStackHandler')
     def test_create_invalid_ipv6(self, mock_ipstack_handler):
@@ -117,6 +119,7 @@ class PrivateGeolocationkApiTest(TestCase):
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['response'], 'Site does not exists')
 
     @patch('api.views.IPStackHandler')
     def test_create_invalid_url(self, mock_ipstack_handler):
@@ -126,6 +129,7 @@ class PrivateGeolocationkApiTest(TestCase):
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['response'], 'Site does not exists')
 
     @patch('api.views.IPStackHandler')
     def test_create_no_ip(self, mock_ipstack_handler):
@@ -135,6 +139,7 @@ class PrivateGeolocationkApiTest(TestCase):
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['response'], 'Site does not exists')
 
     def test_delete_valid_ip(self):
         before = Location.objects.all().count()
