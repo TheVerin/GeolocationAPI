@@ -63,6 +63,20 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(serializer.data['ip_with_bars'], '2_2_2_2')
 
     @patch('api.views.IPStackHandler')
+    def test_create_valid_url(self, mock_ipstack_handler):
+        payload = {
+            'site': 'google.com'
+        }
+
+        response = self.client.post(LOCATION_URL, payload)
+
+        from_db = Location.objects.latest('pk')
+        serializer = LocationSerializer(from_db)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(serializer.data['url'], payload['site'])
+
+    @patch('api.views.IPStackHandler')
     def test_create_valid_ipv6(self, mock_ipstack_handler):
         payload = {
             'site': '2606:4700:20::681a:654'
@@ -87,18 +101,36 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch('api.views.IPStackHandler')
-    def test_create_no_ip(self, mock_ipstack_handler):
+    def test_create_invalid_ipv4(self, mock_ipstack_handler):
         payload = {
-            'site': ''
+            'site': '1234.2.3.4'
         }
         response = self.client.post(LOCATION_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch('api.views.IPStackHandler')
-    def test_create_invalid_ip(self, mock_ipstack_handler):
+    def test_create_invalid_ipv6(self, mock_ipstack_handler):
         payload = {
-            'site': '1234.2.3.4'
+            'site': '26sss06:4sda700:2d0::68s1a:65a4'
+        }
+        response = self.client.post(LOCATION_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('api.views.IPStackHandler')
+    def test_create_invalid_url(self, mock_ipstack_handler):
+        payload = {
+            'site': 'andnowalotofrandomcharactersasdhvbufohvwobuvhb.com'
+        }
+        response = self.client.post(LOCATION_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('api.views.IPStackHandler')
+    def test_create_no_ip(self, mock_ipstack_handler):
+        payload = {
+            'site': ''
         }
         response = self.client.post(LOCATION_URL, payload)
 

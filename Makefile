@@ -18,7 +18,8 @@ premium:
 	docker-compose exec web python manage.py create_premium_group
 
 test:
-	docker-compose exec web python manage.py test && flake8
+	docker-compose exec web coverage run --source='.' manage.py test && flake8
+	docker-compose exec web coverage report -m
 
 static:
 	docker-compose exec web python manage.py collectstatic --noinput
