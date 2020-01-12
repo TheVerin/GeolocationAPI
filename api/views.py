@@ -78,4 +78,5 @@ class SecretMessage(APIView):
                 data = json.loads(json_file.read())
                 return Response(data['message'])
         except FileNotFoundError:
-            return Response('If you want to get secret message you need to look for it in api ;)')
+            return Response('If you want to get secret message you need to look for it in web app '
+                            ';)')
