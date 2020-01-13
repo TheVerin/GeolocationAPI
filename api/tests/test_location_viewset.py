@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 
 from unittest.mock import patch
 
@@ -10,22 +11,21 @@ from api.models.location import Location
 from api.serializers.location_serializer import LocationSerializer
 
 
-LOCATION_URL = '/api/v1/location/'
-
-
 class PublicGeolocationApiTest(TestCase):
 
     def setUp(self) -> None:
+        self.location_url = reverse('location-list')
         self.client = APIClient()
 
     def test_login_required(self):
-        response = self.client.get(LOCATION_URL)
+        response = self.client.get(self.location_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class PrivateGeolocationkApiTest(TestCase):
 
     def setUp(self) -> None:
+        self.location_url = reverse('location-list')
         self.user = get_user_model().objects.create_user(
             'test@test.com',
             'supersecretpassword'
@@ -40,7 +40,7 @@ class PrivateGeolocationkApiTest(TestCase):
 
     def test_get_all_ips(self):
 
-        response = self.client.get(LOCATION_URL)
+        response = self.client.get(self.location_url)
         from_db = Location.objects.all()
         serializer = LocationSerializer(from_db, many=True)
 
@@ -53,7 +53,7 @@ class PrivateGeolocationkApiTest(TestCase):
             'site': '2.2.2.2'
         }
 
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         from_db = Location.objects.latest('pk')
         serializer = LocationSerializer(from_db)
@@ -68,7 +68,7 @@ class PrivateGeolocationkApiTest(TestCase):
             'site': 'google.com'
         }
 
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         from_db = Location.objects.latest('pk')
         serializer = LocationSerializer(from_db)
@@ -82,7 +82,7 @@ class PrivateGeolocationkApiTest(TestCase):
             'site': '2606:4700:20::681a:654'
         }
 
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         from_db = Location.objects.latest('pk')
         serializer = LocationSerializer(from_db)
@@ -96,7 +96,7 @@ class PrivateGeolocationkApiTest(TestCase):
         payload = {
             'site': '1.1.1.1'
         }
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'IP already in db')
@@ -106,7 +106,7 @@ class PrivateGeolocationkApiTest(TestCase):
         payload = {
             'site': '1234.2.3.4'
         }
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'Site does not exists')
@@ -116,7 +116,7 @@ class PrivateGeolocationkApiTest(TestCase):
         payload = {
             'site': '26sss06:4sda700:2d0::68s1a:65a4'
         }
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'Site does not exists')
@@ -126,7 +126,7 @@ class PrivateGeolocationkApiTest(TestCase):
         payload = {
             'site': 'andnowalotofrandomcharactersasdhvbufohvwobuvhb.com'
         }
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'Site does not exists')
@@ -136,14 +136,15 @@ class PrivateGeolocationkApiTest(TestCase):
         payload = {
             'site': ''
         }
-        response = self.client.post(LOCATION_URL, payload)
+        response = self.client.post(self.location_url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'Site does not exists')
 
     def test_delete_valid_ip(self):
         before = Location.objects.all().count()
-        response = self.client.delete(LOCATION_URL+'1_2_3_4/')
+        response = self.client.delete(reverse('location-detail',
+                                              kwargs={'ip_with_bars': '1_2_3_4'}))
         after = Location.objects.all().count()
         is_existed = Location.objects.filter(ip='1.2.3.4').exists()
 
@@ -152,5 +153,6 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertTrue(after < before)
 
     def test_delete_not_existed_ip(self):
-        response = self.client.delete(LOCATION_URL+'1_2_3_42/')
+        response = self.client.delete(reverse('location-detail',
+                                              kwargs={'ip_with_bars': '1_2_3_42'}))
         self.assertTrue(response.status_code, status.HTTP_400_BAD_REQUEST)
