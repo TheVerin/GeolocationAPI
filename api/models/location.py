@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Location(models.Model):
-
+    site = models.CharField(max_length=100, blank=True, null=True)
     url = models.CharField(max_length=100, blank=True, null=True)
     ip = models.CharField(max_length=100)
     ip_with_bars = models.CharField(max_length=100, blank=True, null=True)
