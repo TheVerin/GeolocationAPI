@@ -1,0 +1,7 @@
+Makefile
+.gitignore
+Procfile
+README.md
+.coverage
+db.sqlite3
+.venv/

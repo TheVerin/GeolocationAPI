@@ -33,8 +33,8 @@ class PrivateGeolocationkApiTest(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-        for _ in ['1.1.1.1', 'sofomo.com', '2606:4700:20::681a:754']:
-            Location.objects.create(ip=_)
+        for ip in ['1.1.1.1', '2606:4700:20::681a:754']:
+            Location.objects.create(ip=ip)
 
         Location.objects.create(ip='1.2.3.4', ip_with_bars='1_2_3_4')
 

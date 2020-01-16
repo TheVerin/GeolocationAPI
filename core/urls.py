@@ -6,11 +6,15 @@ from drf_yasg.views import get_schema_view
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
+from rest_framework.permissions import AllowAny
+
 schema_view = get_schema_view(
     openapi.Info(
         title='Geolocation',
         default_version='v1'
-    )
+    ),
+    public=True,
+    permission_classes=(AllowAny,)
 )
 
 urlpatterns = [
