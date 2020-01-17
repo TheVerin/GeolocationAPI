@@ -1,4 +1,5 @@
 import os
+import logging
 
 from rest_framework import mixins, viewsets, status, filters
 from rest_framework.views import APIView
@@ -19,6 +20,8 @@ from api.serializers import location_serializer, site_serializer, ip_serializer
 from api.tools.ipstack_handling import IPStackHandler
 from api.permissions.premium_user import PremiumUser
 from api.tools.exceptions import IPStackError
+
+logger = logging.getLogger(__name__)
 
 
 class LocationGet(mixins.ListModelMixin,
@@ -58,19 +61,26 @@ class LocationCreate(mixins.CreateModelMixin,
             try:
                 location_data = self.ipstack_handler.get_location_data(site=site)
             except ValueError:
+                logger.error(f'Site {site} does not exists')
                 return Response({'response': 'Site does not exists'}, status.HTTP_400_BAD_REQUEST)
         except IPStackError:
+            logger.error('IPStack is not available')
             return Response({'response': 'IPStack service not available'},
                             status.HTTP_400_BAD_REQUEST)
 
-        if Location.objects.filter(ip=location_data['ip']).exists():
+        ip = location_data['ip']
+
+        if Location.objects.filter(ip=ip).exists():
+            logger.debug(f"IP {ip} already in db")
             return Response({'response': 'IP already in db'}, status.HTTP_400_BAD_REQUEST)
 
         serializer = location_serializer.LocationSerializer(data=location_data)
 
         if serializer.is_valid():
             serializer.save()
+            logger.debug(f'{ip} created')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.warning(f'Cannot create: {ip}')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -92,7 +102,10 @@ class SecretMessage(APIView):
     @method_decorator(vary_on_cookie)
     def get(self, request):
         try:
+            logger.debug('Somebody gets secrete message :D')
             return Response({'response': os.environ.get('SECRET_MESSAGE')})
+
         except FileNotFoundError:
+            logger.warning('Somebody wanted to get secret message...')
             return Response({'response': 'If you want to get secret message you need to look for it'
                                          ' in web app ;)'})

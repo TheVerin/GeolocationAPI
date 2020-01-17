@@ -142,18 +142,18 @@ class PrivateGeolocationkApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['response'], 'Site does not exists')
 
-    # def test_delete_valid_ip(self):
-    #     before = Location.objects.all().count()
-    #     response = self.client.delete(reverse('delete-detail',
-    #                                           kwargs={'ip': '1.2.3.4'}))
-    #     after = Location.objects.all().count()
-    #     is_existed = Location.objects.filter(ip='1.2.3.4').exists()
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertFalse(is_existed)
-    #     self.assertTrue(after < before)
-    #
-    # def test_delete_not_existed_ip(self):
-    #     response = self.client.delete(reverse('delete-detail',
-    #                                           kwargs={'ip': '1.2.3.42'}))
-    #     self.assertTrue(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_delete_valid_ip(self):
+        before = Location.objects.all().count()
+        response = self.client.delete(reverse('delete-detail',
+                                              kwargs={'ip': '1.2.3.4'}))
+        after = Location.objects.all().count()
+        is_existed = Location.objects.filter(ip='1.2.3.4').exists()
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(is_existed)
+        self.assertTrue(after < before)
+
+    def test_delete_not_existed_ip(self):
+        response = self.client.delete(reverse('delete-detail',
+                                              kwargs={'ip': '1.2.3.42'}))
+        self.assertTrue(response.status_code, status.HTTP_400_BAD_REQUEST)
