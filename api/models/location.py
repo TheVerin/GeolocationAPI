@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Location(models.Model):
-    url = models.CharField(max_length=100, blank=True, null=True)
     ip = models.CharField(max_length=100)
     type = models.CharField(max_length=100, blank=True, null=True)
     continent_code = models.CharField(max_length=100, blank=True, null=True)

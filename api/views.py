@@ -21,7 +21,6 @@ from api.permissions.premium_user import PremiumUser
 from api.tools.exceptions import IPStackError
 
 
-
 class LocationGet(mixins.ListModelMixin,
                   viewsets.GenericViewSet):
 
@@ -55,15 +54,14 @@ class LocationCreate(mixins.CreateModelMixin,
     def create(self, request, *args, **kwargs):
         site = request.data['site']
 
-        location_data = {}
-
         try:
             try:
                 location_data = self.ipstack_handler.get_location_data(site=site)
             except ValueError:
                 return Response({'response': 'Site does not exists'}, status.HTTP_400_BAD_REQUEST)
         except IPStackError:
-            return Response({'response': 'IPStack service not available'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'response': 'IPStack service not available'},
+                            status.HTTP_400_BAD_REQUEST)
 
         if Location.objects.filter(ip=location_data['ip']).exists():
             return Response({'response': 'IP already in db'}, status.HTTP_400_BAD_REQUEST)
