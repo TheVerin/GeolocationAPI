@@ -32,7 +32,7 @@ class LocationGet(mixins.ListModelMixin,
     permission_classes = (IsAuthenticated, )
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     filter_backends = (filters.SearchFilter, DjangoFilterBackend)
-    search_fields = ('ip', 'url')
+    search_fields = ('ip',)
     filterset_fields = ('type', 'continent_name', 'country_name', 'region_name', 'city')
 
     ipstack_handler = IPStackHandler()
@@ -50,7 +50,6 @@ class LocationCreate(mixins.CreateModelMixin,
     serializer_class = site_serializer.SiteSerializer
     permission_classes = (IsAuthenticated, )
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
-    lookup_field = 'ip'
 
     ipstack_handler = IPStackHandler()
 
@@ -92,6 +91,7 @@ class LocationDelete(mixins.DestroyModelMixin,
     permission_classes = (IsAuthenticated,)
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip'
+    lookup_value_regex = '[0-9.]+'
 
 
 class SecretMessage(APIView):

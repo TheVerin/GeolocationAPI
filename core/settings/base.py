@@ -149,9 +149,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            # I know, there should be not logs in project root, but is 3:32 AM and I do not have
-            # better idea ;)
-            'filename': 'debug.log',
+            'filename': '/tmp/debug.log',
         },
     },
     'loggers': {
