@@ -2,26 +2,29 @@ from ipstack import GeoLookup
 
 from django.conf import settings
 
+from api.tools.exceptions import IPStackError
+
 
 class IPStackHandler:
 
     def get_location_data(self, site):
         if not site:
-            return False
+            raise ValueError
 
         site_type = self.payload_validation(site)
-        geo_lookup = GeoLookup(settings.IPSTACK_KEY)
+
+        try:
+            geo_lookup = GeoLookup(settings.IPSTACK_KEY)
+        except Exception:
+            raise IPStackError('IPStack does not response')
 
         data = geo_lookup.get_location(site_type[0])
-
-        data['ip_with_bars'] = '_'.join(data['ip'].split('.'))
-        data['ip_with_bars'] = '_'.join(data['ip_with_bars'].split(':'))
 
         if site_type[1] == 'url':
             data['url'] = site_type[0]
 
         if not data['continent_name'] and not data['country_name'] and not data['region_name']:
-            return False
+            raise ValueError
         else:
             return data
 

@@ -1,7 +1,6 @@
 [
   {
   "ip": "176.32.103.205",
-  "ip_with_bars": "176_32_103_205",
   "type": "ipv4",
   "continent_code": "NA",
   "continent_name": "North America",
@@ -32,7 +31,6 @@
   },
   {
     "ip": "2606:4700:20::681a:754",
-    "ip_with_bars": "2606_4700_20__681a_754",
     "type": "ipv6",
     "continent_code": "NA",
     "continent_name": "North America",

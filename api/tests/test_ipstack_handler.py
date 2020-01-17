@@ -48,12 +48,11 @@ class ExternalApiTest(TestCase):
             self.assertEqual(example_data[0], response_data)
 
     def test_get_invalid_ipv4_site(self):
-        response_data = self.ip_handler.get_location_data('1111.1111.1111.1111')
-        self.assertEqual(response_data, False)
+        self.assertRaises(ValueError, self.ip_handler.get_location_data, '1111.1111.1111.1111')
 
     def test_get_invalid_url_site(self):
-        response_data = self.ip_handler.get_location_data('ibetthereisnowebsitelikethis.com')
-        self.assertEqual(response_data, False)
+        self.assertRaises(ValueError, self.ip_handler.get_location_data,
+                          'ibetthereisnowebsitelikethis.com')
 
     def test_get_valid_ipv6_site(self):
         with open('api/tests/example_ipstack_response.json') as json_file:
@@ -62,5 +61,5 @@ class ExternalApiTest(TestCase):
             self.assertEqual(example_data[1], response_data)
 
     def test_get_invalid_ipv6_site(self):
-        response_data = self.ip_handler.get_location_data('260asd6:470asd0:20asd::681asda:65sad4')
-        self.assertEqual(response_data, False)
+        self.assertRaises(ValueError, self.ip_handler.get_location_data,
+                          '260asd6:470asd0:20asd::681asda:65sad4')

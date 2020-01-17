@@ -1,0 +1,2 @@
+class IPStackError(Exception):
+    pass
