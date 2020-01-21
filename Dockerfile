@@ -6,12 +6,10 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # create directory for the specialuser
-RUN mkdir -p /home/app
+RUN mkdir /app
 
 # create the appropriate directories
-ENV HOME=/home/app
-ENV APP_ROOT=/home/app/web
-RUN mkdir $APP_ROOT
+ENV APP_ROOT=/app
 WORKDIR $APP_ROOT
 
 # create the specialuser
@@ -28,9 +26,3 @@ RUN pip install -r /requirements.txt
 
 # copy project
 COPY . $APP_ROOT
-
-# chown all the files to the specialuser
-RUN chown -R specialuser:specialuser $APP_ROOT
-
-# change to the specialuser
-USER specialuser
