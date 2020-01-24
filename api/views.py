@@ -1,8 +1,6 @@
-import os
 import logging
 
 from rest_framework import mixins, viewsets, status, filters
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
@@ -18,7 +16,6 @@ from django.views.decorators.vary import vary_on_cookie
 from api.models.location import Location
 from api.serializers import location_serializer, site_serializer, ip_serializer
 from api.tools.ipstack_handling import IPStackHandler
-from api.permissions.premium_user import PremiumUser
 from api.tools.exceptions import IPStackError
 
 logger = logging.getLogger(__name__)
@@ -92,20 +89,3 @@ class LocationDelete(mixins.DestroyModelMixin,
     authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
     lookup_field = 'ip'
     lookup_value_regex = '[0-9.]+'
-
-
-class SecretMessage(APIView):
-    permission_classes = (IsAuthenticated, PremiumUser)
-    authentication_classes = (SessionAuthentication, JSONWebTokenAuthentication)
-
-    @method_decorator(cache_page(60 * 60))
-    @method_decorator(vary_on_cookie)
-    def get(self, request):
-        try:
-            logger.debug('Somebody gets secrete message :D')
-            return Response({'response': os.environ.get('SECRET_MESSAGE')})
-
-        except FileNotFoundError:
-            logger.warning('Somebody wanted to get secret message...')
-            return Response({'response': 'If you want to get secret message you need to look for it'
-                                         ' in web app ;)'})

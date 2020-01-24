@@ -10,6 +10,5 @@ router.register('create', views.LocationCreate, basename='create')
 router.register('delete', views.LocationDelete, basename='delete')
 
 urlpatterns = [
-    path('secret_message/', views.SecretMessage.as_view()),
     path('location/', include(router.urls))
 ]
